@@ -1,5 +1,5 @@
 export const PORT=3001;
-export const DATABASE_URL='mongodb://localhost:27017/MERN_Common_Template';
+export const DATABASE_URL='mongodb://localhost:27017/Backend_Exm';
 export const JWT_KEY='ABC1223';
 export const JWT_EXPIRES=30*60*1000;
 

@@ -6,6 +6,7 @@ import helmet from 'helmet';
 import hpp from 'hpp';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
+import fileUpload from 'express-fileupload';
 
 import {
     DATABASE_URL,
@@ -26,6 +27,8 @@ app.use(cors());
 app.use(helmet());
 app.use(hpp());
 app.use(cookieParser())
+app.use(fileUpload());
+
 
 // Request Size Limit
 app.use(express.json({ limit: MAX_JSON_SIZE }));

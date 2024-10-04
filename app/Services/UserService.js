@@ -16,7 +16,7 @@ export const registerService =  async (req)=>{
         let reqBody = req.body
         reqBody.password = md5(reqBody.password)
 
-        let data = await userModel.create(reqBody)
+        await userModel.create(reqBody)
 
         return{status:200,message:"user create success"};
 
@@ -91,137 +91,39 @@ export const readUserService =  async (req)=>{
     }
 }
 
-export const logOutService =  async (req, res)=>{
+export const UpdateProfileService =  async (req)=>{
 
     try{
-        let user_id = new ObjectId(req.headers.user_id.user_id);
+        let updateDate = req.body;
+        let user_id = req.headers.user_id.user_id;
+        let Obj_user = new ObjectId(user_id);
 
-        let matchingStage =  {$match: {_id:user_id}}
-        let count = {$count:"total"};
+        let matchingStage =  {$match: {_id:Obj_user}}
+        let count= {$count:'total'}
 
-        let data = await userModel.aggregate([
-            matchingStage,
-            count
-        ])
-
-        if(data[0]['total'] > 0){
-            res.clearCookie('token');
-            return {status:200,message:"logout success"};
-        }
-        else {
-            return {status:400, message: "Something went wrong"};
-        }
-    }
-    catch (err){
-        return {status:Error , msg: err.toString() }
-    }
-
-}
-
-export const verifyEmailService =  async (req)=>{
-
-    let email = req.params.email
-    let otp = Math.floor(100000 + Math.random() * 900000);
-
-    try{
-
-        let UserCount = await userModel.aggregate([
-            { $match: { email: email } },
-            { $count: "total" },
-        ]);
-
-
-        if (UserCount[0].total === 1) {
-            //Create OTP
-            await OTPModel.updateOne(
-                {email: email},
-                {
-                    otp,
-                    status: 0,
-                },
-                {upsert: true, new: true}
-            );
-
-
-            // Send Email email, code
-            let EmailTo=email;
-            let EmailTest=otp.toString();
-            let EmailSubject = "This Email Provide OTP"
-
-
-
-            await SendEmail(
-                EmailTo,
-                EmailTest,
-                EmailSubject,
-
-            )
-
-            return{status:200,message:"verify email address",};
-        }
-
-    }
-    catch (e){
-        return {status:400, message:e.toString()}
-    }
-}
-
-export const verifyOTPService =  async (req)=>{
-
-    let email = req.params.email.toLowerCase()
-    let otp = req.params.otp
-    otp = parseInt(otp)
-
-    try{
-        let matchingStage = {$match:{email:email, otp:otp, status:0}}
-        let count = {$count:"total"};
-
-        let OTPCount = await OTPModel.aggregate(
+        let data = await userModel.aggregate(
             [
                 matchingStage,
                 count
             ]
-        );
+        )
 
+        if(data[0]['total']===1){
+            await userModel.updateOne(
+                {_id:Obj_user},
+                {firstName:updateDate.firstName, lastName:updateDate.lastName, phone:updateDate.phone,img:updateDate.img})
 
-        if(OTPCount[0]['total'] > 0){
+            return {status:200,message:"profile success",};
 
-            await OTPModel.updateOne({email:email, otp:otp, status:0}, {status:1});
-            return {status: "200" , message:"OTP verification success"};
         }
+        else{
+            return {status:"error", msg:"something went wrong"};
 
-    }
-
-    catch (e){
-        return {status: "error", msg: e.toString() }
-    }
-
-}
-
-export const resetPasswordService =  async (req)=>{
-
-    let email = req.params.email.toLowerCase()
-    let otp = req.params.otp
-    otp = parseInt(otp)
-
-    try {
-        let  matchingStage = {$match:{email:email, otp:otp, status:1}}
-        let count = {$count:"total"}
-
-        let UserCount = await OTPModel.aggregate([
-            matchingStage,
-            count
-        ]);
-        // console.log(UserCount[0]['total'])
-
-        if(UserCount[0]['total'] > 0){
-
-            await OTPModel.updateOne({email:email, otp:otp, status:1}, {status:null, otp:null});
-            return {status:"200" , message:"OTP verification success"};
         }
     }
     catch (e){
-        return {status:"fail",message:e.toString()}
+        return {status:false, msg:e.toString()}
     }
+
 
 }

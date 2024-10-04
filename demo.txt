@@ -1,15 +1,18 @@
-student Registration
 
-student login
+student Registration (ok)
 
-student auth by JWT token + cookie
+student login  (ok)
 
-student profile read
+student auth by JWT token + cookie (I don't understand)
 
-student profile update
+student profile read  (ok)
 
-File upload api using multer or express file upload
+student profile update (ok)
 
-File read api
+File upload api using multer or express file upload (ok)
 
-Single file delete api using multer or express file upload
+File read api (ok)
+
+Single file delete api using multer or express file upload (ok)
+
+

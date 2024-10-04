@@ -3,11 +3,7 @@ const router = express.Router();
 
 import * as UserController from '../app/controllers/UserController.js';
 import AuthMiddleware from "../app/middlewares/AuthMiddleware.js";
-
-
-
-
-
+import * as UploadFile from "../app/controllers/FileUplodeController.js"
 
 
 
@@ -16,13 +12,12 @@ import AuthMiddleware from "../app/middlewares/AuthMiddleware.js";
 router.post('/register',UserController.registerController)
 router.get('/login',UserController.loginController)
 router.get('/read-user', AuthMiddleware,UserController.readUserController)
-router.get('/logOut', AuthMiddleware,UserController.logOutController)
-router.get('/verify-email/:email',UserController.verifyEmailController)
-router.get('/verify-OTP/:email/:otp',UserController.verifyOTPController)
-router.get('/reset-password/:email/:otp',UserController.resetPasswordController)
+router.get('/update-profile', AuthMiddleware,UserController.UpdateProfileController)
 
-
-
+router.get('/update-profile', AuthMiddleware,UserController.UpdateProfileController)
+router.post('/upload-single-file',  UploadFile.UploadSingleFile)
+router.get('/read-file/:fileName',UploadFile.ReadFile)
+router.delete('/delete-single-file/:fileName',UploadFile.SingleDelete)
 
 
 
