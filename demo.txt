@@ -1,1 +1,15 @@
-hello world
+student Registration
+
+student login
+
+student auth by JWT token + cookie
+
+student profile read
+
+student profile update
+
+File upload api using multer or express file upload
+
+File read api
+
+Single file delete api using multer or express file upload
